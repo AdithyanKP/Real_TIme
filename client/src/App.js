@@ -5,7 +5,6 @@ import ChatSection from "./components/chatSection";
 function App() {
   return (
     <div className="App">
-      <h3>f</h3>
       <ChatSection />
     </div>
   );

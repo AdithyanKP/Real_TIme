@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
+import "./chatSection.css";
 
 const socket = io("http://localhost:4000");
 
@@ -11,10 +12,9 @@ function ChatSection() {
   useEffect(() => {
     // Scroll to bottom of chat window after new messages are added
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    console.log("hjjjjjjjjjj");
+
     // Listen for incoming messages
     socket.on("message", (message) => {
-      console.log("message", message);
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -28,23 +28,41 @@ function ChatSection() {
     event.preventDefault();
     if (inputValue.trim()) {
       console.log("inputValue", inputValue);
+      // Add the new message to the messages array
+      const newMessage = { message: inputValue, id: socket.id };
+      setMessages((message) => [...message, newMessage]);
       socket.emit("message", inputValue);
       setInputValue("");
     }
   }
 
+  useEffect(() => {
+    console.log("hello thre");
+    console.log("messages", messages);
+  }, [messages]);
+
+  console.log("socket.id", socket.id);
+  console.log("message.id", messages);
+
   return (
     <div>
       <h1>Real-Time Chat App</h1>
       <div className="message-list">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={message.id === socket.id ? "message self" : "message"}
-          >
-            <div className="message-body">{message.message}</div>
-          </div>
-        ))}
+        {messages.map(
+          (message, index) => (
+            console.log("message.id", message.id),
+            (
+              <div
+                key={index}
+                className={
+                  message.id === socket.id ? "message_self" : "message"
+                }
+              >
+                <div className="message-body">{message.message}</div>
+              </div>
+            )
+          )
+        )}
         <div ref={messagesEndRef}></div>
       </div>
       <form onSubmit={handleMessageSubmit}>
